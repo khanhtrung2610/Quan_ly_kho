@@ -64,4 +64,17 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('Error fetching products:', error);
       });
   });
-  
+  document.addEventListener('DOMContentLoaded', () => {
+    const alertButton = document.getElementById('alertButton');
+    alertButton.addEventListener('click', () => {
+        alert('Button clicked!');
+    });
+
+    const contactForm = document.getElementById('contactForm');
+    contactForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        alert(`Thank you, ${name}! We will contact you at ${email}.`);
+    });
+});  
