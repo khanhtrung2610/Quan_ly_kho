@@ -1,15 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Warehouse Management</title>
-  <link rel="stylesheet" href="styles.css"> <!-- Nếu có file CSS -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Kho</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <h1>Warehouse Products</h1>
-  <ul id="product-list"></ul> <!-- Đây là nơi bạn sẽ hiển thị danh sách sản phẩm -->
-  
-  <script src="main.js"></script> <!-- Thêm file JavaScript để kết nối API -->
+    <header>
+        <h1>Hệ Thống Quản Lý Kho</h1>
+    </header>
+    <main>
+        <p>Chào mừng bạn đến với hệ thống quản lý kho!</p>
+        <button onclick="loadData()">Tải Dữ Liệu</button>
+        <div id="data-container"></div>
+    </main>
+    <script src="script.js"></script>
 </body>
 </html>

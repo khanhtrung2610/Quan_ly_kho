@@ -1,72 +1,35 @@
 const express = require('express');
-const fs = require('fs');
-const path = require('path');
+const cors = require('cors');
+const mongoose = require('mongoose');
+require('dotenv').config(); // Nếu dùng biến môi trường trong file .env
 
 const app = express();
-app.use(express.json());
-
-// Định nghĩa file lưu trữ dữ liệu
-const productsFile = path.join(__dirname, 'data', 'products.json');
-
-// Đọc dữ liệu sản phẩm từ file JSON
-function getProducts() {
-    const data = fs.readFileSync(productsFile);
-    return JSON.parse(data);
-}
-
-// Lưu dữ liệu sản phẩm vào file JSON
-function saveProducts(products) {
-    fs.writeFileSync(productsFile, JSON.stringify(products, null, 2));
-}
-
-// API để lấy tất cả sản phẩm
-app.get('/api/products', (req, res) => {
-    const products = getProducts();
-    res.json(products);
-});
-
-// API để thêm sản phẩm
-app.post('/api/products', (req, res) => {
-    const newProduct = req.body;
-    const products = getProducts();
-    products.push(newProduct);
-    saveProducts(products);
-    res.status(201).json(newProduct);
-});
-
-// API để sửa sản phẩm
-app.put('/api/products/:id', (req, res) => {
-    const { id } = req.params;
-    const updatedProduct = req.body;
-    const products = getProducts();
-    
-    const productIndex = products.findIndex(p => p.id === parseInt(id));
-    if (productIndex !== -1) {
-        products[productIndex] = { ...products[productIndex], ...updatedProduct };
-        saveProducts(products);
-        res.json(products[productIndex]);
-    } else {
-        res.status(404).send('Product not found');
-    }
-});
-
-// API để xóa sản phẩm
-app.delete('/api/products/:id', (req, res) => {
-    const { id } = req.params;
-    const products = getProducts();
-    
-    const productIndex = products.findIndex(p => p.id === parseInt(id));
-    if (productIndex !== -1) {
-        products.splice(productIndex, 1);
-        saveProducts(products);
-        res.status(204).send();
-    } else {
-        res.status(404).send('Product not found');
-    }
-});
-
-// Khởi động server
 const PORT = process.env.PORT || 5000;
+
+// Middleware
+app.use(express.json());
+app.use(cors());
+
+// Kết nối MongoDB (nếu sử dụng)
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/warehouse';
+mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => console.log('✅ Connected to MongoDB'))
+    .catch(err => console.error('❌ MongoDB connection error:', err));
+
+// Route kiểm tra server hoạt động
+app.get('/', (req, res) => {
+    res.send('Warehouse Management API is running...');
+});
+
+// API mẫu để lấy danh sách sản phẩm trong kho
+app.get('/products', (req, res) => {
+    res.json([
+        { id: 1, name: 'Router Cisco', quantity: 10 },
+        { id: 2, name: 'Switch TP-Link', quantity: 5 }
+    ]);
+});
+
+// Lắng nghe server
 app.listen(PORT, () => {
-    console.log(`🚀 Server đang chạy tại http://localhost:${PORT}`);
+    console.log(`🚀 Server is running on http://localhost:${PORT}`);
 });
