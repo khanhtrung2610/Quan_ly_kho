@@ -3,18 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản Lý Kho</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Danh sách thiết bị</title>
 </head>
 <body>
-    <header>
-        <h1>Hệ Thống Quản Lý Kho</h1>
-    </header>
-    <main>
-        <p>Chào mừng bạn đến với hệ thống quản lý kho!</p>
-        <button onclick="loadData()">Tải Dữ Liệu</button>
-        <div id="data-container"></div>
-    </main>
-    <script src="script.js"></script>
+    <h2>Danh sách thiết bị</h2>
+    <table border="1" id="productTable">
+        <thead>
+            <tr>
+                <th>Tên Thiết Bị</th>
+                <th>Loại</th>
+                <th>Giá (VND)</th>
+                <th>Số Lượng</th>
+                <th>Mô Tả</th>
+                <th>Ngày Nhập Kho</th>
+                <th>Nhà Cung Cấp</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <script>
+        fetch('http://localhost:5000/api/products')
+            .then(response => response.json())
+            .then(products => {
+                const tableBody = document.querySelector("#productTable tbody");
+                products.forEach(product => {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td>${product.tenThietBi}</td>
+                        <td>${product.loaiThietBi}</td>
+                        <td>${product.gia.toLocaleString()} VND</td>
+                        <td>${product.soLuong}</td>
+                        <td>${product.moTa}</td>
+                        <td>${product.ngayNhapKho}</td>
+                        <td>${product.nhaCungCap}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            })
+            .catch(error => console.error("Lỗi:", error));
+    </script>
 </body>
 </html>
