@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hệ thống Quản lý Hàng Tồn Kho</title>
+    <link rel="stylesheet" href="/frontend/styles.css" />
+  </head>
+  <body>
+    <header>Hệ thống Quản lý Hàng Tồn Kho</header>
+    <nav>
+      <ul>
+        <li><a href="/frontend/index.html">Trang chủ</a></li>
+        <li><a href="/frontend/tinh năng/khohang.html">Kho hàng</a></li>
+        <li><a href="/frontend/tinh năng/baocao.html">Báo cáo</a></li>
+        <li><a href="/frontend/tinh năng/caidat.html">Cài đặt</a></li>
+      </ul>
+    </nav>
+    <main class="container">
+      <div class="buttons">
+        <button onclick="fetchInventory()">Tải dữ liệu</button>
+        <button onclick="openAddItemForm()">Thêm thiết bị</button>
+      </div>
+      <div id="addItemForm" style="display: none">
+        <h3>Thêm Thiết Bị</h3>
+        <input type="text" id="deviceName" placeholder="Tên thiết bị" />
+        <input type="number" id="deviceQuantity" placeholder="Số lượng" />
+        <input type="text" id="deviceCategory" placeholder="Loại thiết bị" />
+        <input type="date" id="purchaseDate" placeholder="Ngày mua" />
+        <button onclick="addItem()">Thêm</button>
+        <button onclick="closeAddItemForm()">Hủy</button>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Tên Thiết Bị</th>
+            <th>Số Lượng</th>
+            <th>Loại</th>
+            <th>Ngày Mua</th>
+            <th>Hành Động</th>
+          </tr>
+        </thead>
+        <tbody id="inventoryTable"></tbody>
+      </table>
+    </main>
+    <footer>&copy; 2025 Hệ thống Quản lý Hàng Tồn Kho</footer>
+    <script>
+      function openAddItemForm() {
+        document.getElementById("addItemForm").style.display = "block";
+      }
+      function closeAddItemForm() {
+        document.getElementById("addItemForm").style.display = "none";
+      }
+      function addItem() {
+        let name = document.getElementById("deviceName").value;
+        let quantity = document.getElementById("deviceQuantity").value;
+        let category = document.getElementById("deviceCategory").value;
+        let purchaseDate = document.getElementById("purchaseDate").value;
+        if (name && quantity && category && purchaseDate) {
+          let data = JSON.parse(localStorage.getItem("inventoryData")) || [];
+          let id = data.length ? data[data.length - 1].id + 1 : 1;
+          let newItem = { id, name, quantity, category, purchaseDate };
+          data.push(newItem);
+          localStorage.setItem("inventoryData", JSON.stringify(data));
+          loadData();
+          closeAddItemForm();
+        }
+      }
+      function removeItem(button) {
+        let row = button.parentElement.parentElement;
+        let id = row.cells[0].innerText;
+        let data = JSON.parse(localStorage.getItem("inventoryData")) || [];
+        data = data.filter((item) => item.id != id);
+        localStorage.setItem("inventoryData", JSON.stringify(data));
+        loadData();
+      }
+      function loadData() {
+        let data = JSON.parse(localStorage.getItem("inventoryData")) || [];
+        let table = document.getElementById("inventoryTable");
+        table.innerHTML = "";
+        data.forEach((item) => {
+          let row = table.insertRow();
+          row.innerHTML = `<td>${item.id}</td><td>${item.name}</td><td>${item.quantity}</td><td>${item.category}</td><td>${item.purchaseDate}</td><td><button onclick="removeItem(this)">Xóa</button></td>`;
+        });
+      }
+      window.onload = loadData;
+    </script>
+  </body>
+</html>
